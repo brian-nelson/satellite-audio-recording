@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import SarService from "../Services/SarService";
 import {Row, Col, Form, Button} from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom'
-import uuid from 'uuid';
+import {v4 as uuid} from 'uuid';
 import {toast} from "react-toastify";
 
 export default class User extends Component {
@@ -69,12 +69,12 @@ export default class User extends Component {
     try {
       let userId = this.state.userId;
       if (userId==='new'){
-        userId = uuid.v4();
+        userId = uuid();
       }
 
       let personId = this.state.personId;
       if (personId === '') {
-        personId = uuid.v4();
+        personId = uuid();
       }
 
       let givenName = this.state.givenName;

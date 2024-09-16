@@ -14,4 +14,7 @@ export default class ScriptDao extends BaseDao {
     return this.read(`/projects/${projectId}/script/${dialogId}/context`);
   }
 
+  getSceneLines(projectId, sceneId) {
+    return this.read(`/projects/${projectId}/script/scene/${sceneId}`);
+  }
 }

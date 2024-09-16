@@ -105,16 +105,6 @@ namespace SAR.Apps.Server
                 });
             });
             
-
-            app.UseCors(x =>
-            {
-                x.AllowAnyHeader();
-                x.AllowAnyOrigin();
-                x.AllowAnyMethod();
-            });
-
-            app.UseAuthentication();
-
             DefaultFilesOptions defaultFileOptions = new DefaultFilesOptions();
             defaultFileOptions.DefaultFileNames.Clear();
             defaultFileOptions.DefaultFileNames.Add("index.html");
@@ -129,7 +119,24 @@ namespace SAR.Apps.Server
 
             app.UseStaticFiles(staticFileOptions);
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseCors(x =>
+            {
+                x.AllowAnyHeader();
+                x.AllowAnyOrigin();
+                x.AllowAnyMethod();
+            });
+
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            app.Run(async (context) =>
+            {
+                context.Response.ContentType = "text/html";
+                await context.Response.SendFileAsync(Path.Combine(env.WebRootPath, "index.html"));
+            });
         }
     }
 }

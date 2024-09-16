@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LiteDB;
 using SAR.Libraries.Database.Objects;
 
@@ -27,7 +28,11 @@ namespace SAR.Libraries.Database.Repos
 
         public IEnumerable<T> GetAll()
         {
-            return Collection.FindAll();
+            var result = Collection
+                .FindAll()
+                .ToList();
+
+            return result;
         }
 
         public void Save(T record)

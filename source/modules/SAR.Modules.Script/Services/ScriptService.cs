@@ -53,7 +53,9 @@ namespace SAR.Modules.Script.Services
         {
             Dictionary<Guid, Project> projects = new Dictionary<Guid, Project>();
 
-            var access = _projectAccessRepo.GetByPerson(personId);
+            var access = _projectAccessRepo
+                .GetByPerson(personId)
+                .ToList();
 
             foreach (var projectAccess in access)
             {
@@ -145,7 +147,7 @@ namespace SAR.Modules.Script.Services
             return _scriptElementRepo.GetById(elementId);
         }
 
-        public IEnumerable<ScriptElement> GetScriptElements(Guid projectId, int start, int end)
+        public IEnumerable<ScriptElement> GetScriptElements(Guid projectId, int? start, int? end)
         {
             return _scriptElementRepo.GetByProject(projectId, start, end);
         }
@@ -309,6 +311,11 @@ namespace SAR.Modules.Script.Services
         public IEnumerable<Scene> GetScenesByProject(Guid projectId)
         {
             return _sceneRepo.GetByProject(projectId);
+        }
+
+        public Scene GetSceneByProjectNumber(Guid projectId, int sceneNumber)
+        {
+            return _sceneRepo.GetByProjectNumber(projectId, sceneNumber);
         }
 
         public Scene GetScene(Guid sceneId)

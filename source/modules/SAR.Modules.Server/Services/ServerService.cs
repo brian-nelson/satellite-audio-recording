@@ -106,8 +106,10 @@ namespace SAR.Modules.Server.Services
 
             if (passwordHash == null)
             {
-                passwordHash = new PasswordHash();
-                passwordHash.UserId = userId;
+                passwordHash = new PasswordHash
+                {
+                    UserId = userId
+                };
             }
 
             passwordHash.Salt = PasswordHelper.GenerateSalt();

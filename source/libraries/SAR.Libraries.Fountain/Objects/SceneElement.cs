@@ -29,7 +29,7 @@ namespace SAR.Libraries.Fountain.Objects
             }
 
             //Extract Time of Day
-            int dashPosition = temp.IndexOf("-");
+            int dashPosition = temp.LastIndexOf("-");
             if (dashPosition > 0)
             {
                 TimeOfDay = temp.Substring(dashPosition + 1).Trim();

@@ -8,6 +8,7 @@ import CharacterDao from "../Data/CharacterDao";
 import ScriptDao from "../Data/ScriptDao";
 import RecordingDao from "../Data/RecordingDao";
 import UserDao from "../Data/UserDao";
+import SceneDao from "../Data/SceneDao";
 
 class SarService {
   static JWT = "";
@@ -103,6 +104,38 @@ class SarService {
     const dao = new ScriptDao(Environment.BASE_URL);
     return dao.getDialogContext(projectId, dialogId);
   }
+  static getLinesByScene(projectId, sceneId) {
+    const dao = new ScriptDao(Environment.BASE_URL);
+    return dao.getSceneLines(projectId, sceneId);
+  }
+
+  //Scenes
+  static getScenes(projectId) {
+    const dao = new SceneDao(Environment.BASE_URL);
+    return dao.getScenes(projectId);
+  }
+
+  static getSceneLine(scene) {
+    let number = scene.SceneNumber;
+    if (number === null) {
+      number = scene.SequenceNumber;
+    }
+
+    let timeOfDay = "";
+    if (scene.TimeOfDay !== null
+      && scene.TimeOfDay !== ""){
+      timeOfDay = ` - ${scene.TimeOfDay}`
+    }
+
+    let location = "";
+    if (scene.Location !== null
+        && scene.Location !== "") {
+      location = ` ${scene.Location} `
+    }
+
+    return `${scene.InteriorExterior}${location}${timeOfDay} #${number}#`;
+  }
+
 
   //Recordings
   static saveRecording(projectId, dialogId, formData) {

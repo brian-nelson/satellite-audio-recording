@@ -53,8 +53,29 @@ namespace SAR.Apps.Server.Services
             throw new UnauthorizedAccessException();
         }
 
-        public void SaveProject(Guid userPersonId, Project project)
+        public void SaveProject(Guid userId, Guid userPersonId, Project project)
         {
+            var existing = _scriptService.GetProject(project.Id);
+            if (existing == null)
+            {
+                //New Project.  Check of user is a system owner
+                if (IsSystemOwner(userId))
+                {
+                    //They are so save it and add project access
+                    _scriptService.Save(project);
+
+                    ProjectAccess pa = new ProjectAccess
+                    {
+                        ProjectId = project.Id,
+                        PersonId = userPersonId,
+                    };
+                    pa.AccessTypes.Add(AccessTypes.Owner);
+                    _scriptService.Save(pa);
+                }
+
+                return;
+            }
+
             if (HasAccessToProject(userPersonId, project.Id))
             {
                 //TODO - Validate Write Access
@@ -127,8 +148,6 @@ namespace SAR.Apps.Server.Services
 
             throw new UnauthorizedAccessException();
         }
-
-        
 
         public Character GetCharacter(Guid userPersonId, Guid projectId, Guid characterId)
         {
@@ -474,13 +493,71 @@ namespace SAR.Apps.Server.Services
         {
             if (HasAccessToProject(userPersonId, projectId))
             {
-                var scenes = _scriptService.GetScenesByProject(projectId);
+                var scenes = _scriptService
+                    .GetScenesByProject(projectId)
+                    .ToList();
                 var output = new List<Objects.UIScene>();
 
                 foreach (var scene in scenes)
                 {
                     UIScene s = BuildScene(scene);
                     output.Add(s);
+                }
+
+                if (scenes.Count > 0)
+                {
+                    var first = scenes[0];
+
+                    if (first.ScriptSequenceNumber > 1)
+                    {
+                        var zero = new UIScene
+                        {
+                            Id = Guid.Empty,
+                            InteriorExterior = "Intro", 
+                            SequenceNumber = 0, 
+                            ScriptPosition = 0
+                        };
+
+                        output.Insert(0, zero);
+                    }
+                }
+
+                return output;
+            }
+
+            throw new UnauthorizedAccessException();
+        }
+
+        public IEnumerable<ScriptLine> GetScript(Guid userPersonId, Guid projectId, Guid sceneId)
+        {
+            if (HasAccessToProject(userPersonId, projectId))
+            {
+                int start = 0;
+                int nextSceneNumber = 1;
+
+                if (sceneId != Guid.Empty)
+                {
+                    var thisScene = _scriptService.GetScene(sceneId);
+
+                    start = thisScene.ScriptSequenceNumber; // Include the script scene line itself.
+                    nextSceneNumber = thisScene.Number + 1;
+                } 
+                
+                int? end = null;
+
+                var nextScene = _scriptService.GetSceneByProjectNumber(projectId, nextSceneNumber);
+                if (nextScene != null)
+                {
+                    end = nextScene.ScriptSequenceNumber - 1; //Remove the next scenes line.
+                }
+                
+                var elements = _scriptService.GetScriptElements(projectId, start, end);
+
+                var output = new List<ScriptLine>();
+
+                foreach (var se in elements)
+                {
+                    output.Add(BuildScriptLine(se));
                 }
 
                 return output;

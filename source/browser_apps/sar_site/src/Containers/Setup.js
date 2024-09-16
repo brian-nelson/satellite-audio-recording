@@ -138,7 +138,7 @@ export default class Setup extends Component {
 
   renderRedirect = () => {
     if (this.state.redirectToHome) {
-      return <Redirect to='/' />
+      return <Redirect to={'/'} />
     }
   };
 

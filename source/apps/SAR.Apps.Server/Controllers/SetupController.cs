@@ -29,6 +29,12 @@ namespace SAR.Apps.Server.Controllers
             if (_authService.IsSetup())
             {
                 response.IsSetup = true;
+
+                _logger.Info("System is setup");
+            }
+            else
+            {
+                _logger.Info("System is not setup");
             }
 
             return Ok(response);

@@ -117,12 +117,11 @@ namespace SAR.Apps.Server.Services
             };
             pa.AccessTypes.Add(AccessTypes.Owner);
 
-            _scriptService.Save(p);
-            _scriptService.Save(proj);
-            _scriptService.Save(pa);
-
-            _serverService.Save(u);
-            _serverService.Save(ph);
+            _scriptService.Save(p);    //Person
+            _serverService.Save(u);    //User
+            _serverService.Save(ph);   //PasswordHash
+            _scriptService.Save(proj); //Project
+            _scriptService.Save(pa);   //Project Access
         }
 
     }

@@ -7,9 +7,9 @@
         public const string SCENE_HEADER_TEMPLATE = "\n<Scene Heading>$1</Scene Heading>";
         public const string ACTION_TEMPLATE = "<Action>$1</Action>$2";
         public const string MULTI_LINE_ACTION_TEMPLATE = "\n<Action>$2</Action>";
-        public const string CHARACTER_CUE_TEMPLATE = "<Character>$1</Character>";
+        public const string CHARACTER_CUE_TEMPLATE = "<Character>$1</Character>\n";
         public const string DIALOGUE_TEMPLATE = "$1<Dialogue>$4</Dialogue>";
-        public const string PARENTHETICAL_TEMPLATE = "<Parenthetical>$2</Parenthetical>";
+        public const string PARENTHETICAL_TEMPLATE = "<Parenthetical>$2</Parenthetical>\n";
         public const string TRANSITION_TEMPLATE = "\n<Transition>$1</Transition>";
         public const string FORCED_TRANSITION_TEMPLATE = "\n<Transition>$1</Transition>";
         public const string FALSE_TRANSITION_TEMPLATE = "\n<Action>$1</Action>";

@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import SarService from "../Services/SarService";
 import {Row, Col, Form, Button} from "react-bootstrap";
 import { Link, Redirect } from 'react-router-dom'
-import uuid from 'uuid';
+import {v4 as uuid} from 'uuid';
 import {toast} from "react-toastify";
 
 export default class Character extends Component {
@@ -103,7 +103,7 @@ export default class Character extends Component {
       let projectId = this.state.projectId;
       let characterId = this.state.characterId;
       if (characterId==='new'){
-        characterId = uuid.v4();
+        characterId = uuid();
       }
 
       let performerPersonId = this.state.performerPersonId;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using SAR.Libraries.Common.Helpers;
 using SAR.Libraries.Common.Security;
 
 namespace SAR.Apps.Server
@@ -28,6 +29,7 @@ namespace SAR.Apps.Server
         private static Config LoadConfig()
         {
             string folder = Environment.GetEnvironmentVariable("SAR_LOCAL_DATAFOLDER");
+            DirectoryHelper.EnsureDirectory(folder);
 
             string jwtSecret = Environment.GetEnvironmentVariable("SAR_JWT_SECRET");
             if (string.IsNullOrEmpty(jwtSecret))

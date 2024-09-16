@@ -5,18 +5,29 @@ import {Row, Col, Table} from "react-bootstrap";
 import { Link } from 'react-router-dom'
 import { FaPlusCircle } from "react-icons/fa";
 import {toast} from "react-toastify";
+import { Redirect } from "react-router-dom";
 
 export default class Projects extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      projects:[]
+      projects:[],
+      newPressed: false
     };
+
+    this.loadData = this.loadData.bind(this);
+    this.handleNewProject = this.handleNewProject.bind(this);
   }
 
   componentDidMount() {
     this.loadData();
+  }
+
+  handleNewProject() {
+    this.setState({
+      newPressed: true
+    });
   }
 
   loadData() {
@@ -51,6 +62,13 @@ export default class Projects extends Component {
     }
   }
 
+  renderRedirect() {
+    if (this.state.newPressed) {
+      return <Redirect to="projects/new"/>;
+    }
+    return "";
+  }
+
   renderTableBody(list) {
     if (list != null
         && list.length > 0) {
@@ -64,6 +82,7 @@ export default class Projects extends Component {
               <td>
                 { this.renderTitleRow(item.Id, item.Title)}
                 <Row>
+                  <Col sm={3}><Link to={`${projectUrl}/script`}>Script</Link></Col>
                   <Col sm={3}><Link to={`${projectUrl}/characters`}>Characters</Link></Col>
                   <Col sm={3}><Link to={`${projectUrl}/participants`}>Participants</Link></Col>
                 </Row>
@@ -90,6 +109,7 @@ export default class Projects extends Component {
   render() {
     return (
       <div className="Projects">
+        {this.renderRedirect()}
         <Row>
           <Col>
             <h3>Projects</h3>

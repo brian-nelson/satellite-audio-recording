@@ -4,20 +4,32 @@ import SarService from "../Services/SarService";
 import {Row, Col, Form, Button, Tabs, Tab} from "react-bootstrap";
 import LoaderButton from "../Components/LoaderButton";
 import {toast} from "react-toastify";
+import {v4 as uuid} from 'uuid';
 
 export default class Project extends Component {
   constructor(props) {
     super(props);
 
     let projectId = this.props.match.params.projectId;
+    let isNew = false;
+
+    if (projectId !== undefined
+        && projectId !== null
+        && projectId === "new") {
+      isNew = true;
+      projectId = uuid();
+    }
 
     this.state = {
+      isNew: isNew,
       projectId: projectId,
       projectTitle: "",
       description: "",
       selectedFile:"",
       importingScript:false
     };
+
+    this.loadData = this.loadData.bind(this);
   }
 
   componentDidMount() {
@@ -25,18 +37,20 @@ export default class Project extends Component {
   }
 
   loadData(projectId) {
-    SarService.getProject(projectId)
-      .then(r => {
-        this.setState({
-          projectTitle: r.Title || "",
-          description: r.Description || "",
-          language: r.Language || "",
-          locale: r.Locale || ""
+    if (!this.state.isNew) {
+      SarService.getProject(projectId)
+        .then(r => {
+          this.setState({
+            projectTitle: r.Title || "",
+            description: r.Description || "",
+            language: r.Language || "",
+            locale: r.Locale || ""
+          });
+        })
+        .catch(e => {
+          toast.error(e.message);
         });
-      })
-      .catch(e => {
-        toast.error(e.message);
-      });
+    }
   }
 
   handleSubmit = event => {
@@ -51,7 +65,26 @@ export default class Project extends Component {
 
       SarService.saveProject(proj)
         .then(r => {
-          toast.info("Saved");
+          if (this.state.isNew) {
+            //Reload the user access
+            SarService.getSelfAccess()
+              .then(r => {
+                //Update the SAR Service with latest access
+                SarService.setAccess(r);
+
+                //This is no longer new
+                this.setState({
+                  isNew: false
+                }, () => {
+                  toast.info("Saved new project");
+                })
+              })
+              .catch(error => {
+                toast.error(error.message);
+              });
+          } else {
+            toast.info("Saved project");
+          }
         })
         .catch(e =>{
           toast.error(e.message);

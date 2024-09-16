@@ -54,11 +54,12 @@ namespace SAR.Apps.Server.Controllers
         [Route("api/projects")]
         public ActionResult SaveProject([FromBody] Project project)
         {
+            var userId = User.GetUserId();
             var personId = User.GetPersonId();
 
             try
             {
-                _projectService.SaveProject(personId, project);
+                _projectService.SaveProject(userId, personId, project);
                 return Ok();
             }
             catch (UnauthorizedAccessException)
